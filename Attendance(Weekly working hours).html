@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Working Hours</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    .table th, .table td {
+      text-align: center;
+    }
+
+    .progress-bar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .progress-bar::after {
+        content: attr(data-label);
+        margin-left: 10px;
+        font-size: 0.8em;
+    }
+
+    .progress-bar {
+        position: relative;
+    }
+
+    .progress-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 5px;
+        height: 100%;
+    }
+
+    .progress-bar {
+        position: relative;
+    }
+
+    input {
+        display: inline-block;
+    }
+
+    input[type="datetime-local"] {
+        width: 150px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 5px;
+    }
+
+    #img_user{
+        float: center;
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+
+    .container1 p {
+        display: inline-block;
+        margin-right: 10px;
+        margin-top: 40px;
+    }
+
+    .container1 {
+        text-align: center;
+    }
+
+  </style>
+</head>
+<body class="container">
+
+    <div class="container1">
+        <p>Employee Name</p>
+        <p>Employee ID</p>
+        <p>Employee Designation</p>
+        <p>Employee Location</p>
+    </div>
+
+  <h2 class="mt-4 mb-4">Weekly Working Hours</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Check-In Time</th>
+        <th>Work Timeline</th>
+        <th>Check-Out Time</th>
+        <th>Total Hours</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Monday</td>
+        <td><input type="datetime-local" id="mondayCheckIn"></td>
+        <td>
+            <div class="progress mt-2">
+                <div class="progress-bar" style="width: 0; background-color: green" id="mondayWork"></div>   
+            </div>
+        </td>
+        <td><input type="datetime-local" id="mondayCheckOut"></td>
+        <td id="totalMonday">0</td>
+      </tr>
+
+        <tr>
+            <td>Tuesday</td>
+            <td><input type="datetime-local" id="tuesdayCheckIn"></td>
+            <td>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: 0; background-color: green" id="tuesdayWork"></div>   
+                </div>
+            </td>
+            <td><input type="datetime-local" id="tuesdayCheckOut"></td>
+            <td id="totalTuesday">0</td>
+        </tr>
+
+        <tr>
+            <td>Wednesday</td>
+            <td><input type="datetime-local" id="wednesdayCheckIn"></td>
+            <td>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: 0; background-color: green" id="wednesdayWork"></div>   
+                </div>
+            </td>
+            <td><input type="datetime-local" id="wednesdayCheckOut"></td>
+            <td id="totalWednesday">0</td>
+        </tr>
+
+        <tr>
+            <td>Thursday</td>
+            <td><input type="datetime-local" id="thursdayCheckIn"></td>
+            <td>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: 0; background-color: green" id="thursdayWork"></div>   
+                </div>
+            </td>
+            <td><input type="datetime-local" id="thursdayCheckOut"></td>
+            <td id="totalThursday">0</td>
+        </tr>
+
+        <tr>
+            <td>Friday</td>
+            <td><input type="datetime-local" id="fridayCheckIn"></td>
+            <td>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: 0; background-color: green" id="fridayWork"></div>   
+                </div>
+            </td>
+            <td><input type="datetime-local" id="fridayCheckOut"></td>
+            <td id="totalFriday">0</td>
+        </tr>
+
+        <tr>
+            <td>Saturday</td>
+            <td><input type="datetime-local" id="saturdayCheckIn"></td>
+            <td>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: 0; background-color: green" id="saturdayWork"></div>   
+                </div>
+            </td>
+            <td><input type="datetime-local" id="saturdayCheckOut"></td>
+            <td id="totalSaturday">0</td>
+        </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td id="grandTotal">0</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script>
+
+    //calculate datetime difference on enter check-in datetime and check-out datetime for 24 hours format
+    $('#mondayCheckIn, #mondayCheckOut').on('change', function() {
+        var checkIn = $('#mondayCheckIn').val();
+        var checkOut = $('#mondayCheckOut').val();
+        var total = 0;
+        if (checkIn && checkOut) {
+            var checkInTime = new Date(checkIn).getTime();
+            var checkOutTime = new Date(checkOut).getTime();
+            total = (checkOutTime - checkInTime) / 1000 / 60 / 60;
+        }
+        $('#totalMonday').text(total);
+        $('#mondayWork').css('width', total * 10 + '%');
+        calculateGrandTotal();
+    });
+
+    $('#tuesdayCheckIn, #tuesdayCheckOut').on('change', function() {
+        var checkIn = $('#tuesdayCheckIn').val();
+        var checkOut = $('#tuesdayCheckOut').val();
+        var total = 0;
+        if (checkIn && checkOut) {
+            var checkInTime = new Date(checkIn).getTime();
+            var checkOutTime = new Date(checkOut).getTime();
+            total = (checkOutTime - checkInTime) / 1000 / 60 / 60;
+        }
+        $('#totalTuesday').text(total);
+        $('#tuesdayWork').css('width', total * 10 + '%');
+        calculateGrandTotal();
+    });
+
+    $('#wednesdayCheckIn, #wednesdayCheckOut').on('change', function() {
+        var checkIn = $('#wednesdayCheckIn').val();
+        var checkOut = $('#wednesdayCheckOut').val();
+        var total = 0;
+        if (checkIn && checkOut) {
+            var checkInTime = new Date(checkIn).getTime();
+            var checkOutTime = new Date(checkOut).getTime();
+            total = (checkOutTime - checkInTime) / 1000 / 60 / 60;
+        }
+        $('#totalWednesday').text(total);
+        $('#wednesdayWork').css('width', total * 10 + '%');
+        calculateGrandTotal();
+    });
+
+    $('#thursdayCheckIn, #thursdayCheckOut').on('change', function() {
+        var checkIn = $('#thursdayCheckIn').val();
+        var checkOut = $('#thursdayCheckOut').val();
+        var total = 0;
+        if (checkIn && checkOut) {
+            var checkInTime = new Date(checkIn).getTime();
+            var checkOutTime = new Date(checkOut).getTime();
+            total = (checkOutTime - checkInTime) / 1000 / 60 / 60;
+        }
+        $('#totalThursday').text(total);
+        $('#thursdayWork').css('width', total * 10 + '%');
+        calculateGrandTotal();
+    });
+
+    $('#fridayCheckIn, #fridayCheckOut').on('change', function() {
+        var checkIn = $('#fridayCheckIn').val();
+        var checkOut = $('#fridayCheckOut').val();
+        var total = 0;
+        if (checkIn && checkOut) {
+            var checkInTime = new Date(checkIn).getTime();
+            var checkOutTime = new Date(checkOut).getTime();
+            total = (checkOutTime - checkInTime) / 1000 / 60 / 60;
+        }
+        $('#totalFriday').text(total);
+        $('#fridayWork').css('width', total * 10 + '%');
+        calculateGrandTotal();
+    });
+
+    $('#saturdayCheckIn, #saturdayCheckOut').on('change', function() {
+        var checkIn = $('#saturdayCheckIn').val();
+        var checkOut = $('#saturdayCheckOut').val();
+        var total = 0;
+        if (checkIn && checkOut) {
+            var checkInTime = new Date(checkIn).getTime();
+            var checkOutTime = new Date(checkOut).getTime();
+            total = (checkOutTime - checkInTime) / 1000 / 60 / 60;
+        }
+        $('#totalSaturday').text(total);
+        $('#saturdayWork').css('width', total * 10 + '%');
+        calculateGrandTotal();
+    });
+
+    //grand total of working hours
+    function calculateGrandTotal() {
+        var grandTotal = 0;
+        var totalMonday = $('#totalMonday').text();
+        var totalTuesday = $('#totalTuesday').text();
+        var totalWednesday = $('#totalWednesday').text();
+        var totalThursday = $('#totalThursday').text();
+        var totalFriday = $('#totalFriday').text();
+        var totalSaturday = $('#totalSaturday').text();
+        grandTotal = parseFloat(totalMonday) + parseFloat(totalTuesday) + parseFloat(totalWednesday) + parseFloat(totalThursday) + parseFloat(totalFriday) + parseFloat(totalSaturday);
+        $('#grandTotal').text(grandTotal);
+    }
+
+  </script>
+
+</body>
+</html>
