@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Shivam Minerals HOME</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+            
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+    
+            header {
+                background-color: #19897a;
+                color: #fff;
+                padding: 10px;
+                text-align: center;
+            }
+
+            nav {
+                background-color: #eee;
+                overflow: hidden;
+            }
+
+            nav a {
+                margin-right: 15px;
+                text-decoration: none;
+                color: black;
+                font-weight: bold;
+                padding: 14px 16px;
+            }
+
+            .left-button {
+                float: left;
+            }
+
+            .right-button {
+                float: right;
+            }
+
+            nav a:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+            main {
+                padding: 20px;
+            }
+    
+            .outer-box {
+                width: 90%;
+                align-items: center;
+                border: 1px solid black;
+                padding: 10px;
+                margin-left: 20px;
+            }
+    
+            .first-col {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                border: 1px solid black;
+                padding: 10px;
+            }
+    
+            .flex-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                border: 1px solid black;
+                padding: 10px;
+            }
+    
+            #icon1 {
+                color: green;
+                font-size: 20px;
+            }
+    
+            #icon2 {
+                color: red;
+                font-size: 20px;
+            }
+    
+            #print-div {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                border: 1px solid black;
+                padding: 10px;
+            }
+
+            #verify {
+                align-items: center;
+                border: none;
+                padding: 15px;
+            }
+
+            #verify i {
+                color: green;
+                font-size: 50px;
+            }
+
+            #printresult {
+                display: inline-block;
+                border: none;
+                padding: 10px;
+                color: black;
+            }
+
+            #box-2 {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                border: 1px solid black;
+                padding: 10px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .btn-success {
+                background-color: rgb(22, 22, 92);
+                color: white;
+                font-weight: bold;
+                padding: 14px 16px;
+                border: none;
+            }
+
+            .btn-success:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+            .btn-primary {
+                background-color: green;
+                color: white;
+                font-weight: bold;
+                padding: 14px 16px;
+                border: none;
+            }
+
+            .btn-primary:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+    </style>
+</head>
+
+<body>
+<header>
+    <h1> Attendance System Home Page</h1>
+</header>
+
+<!--employee attendance directory and logout buttons in nav bar-->
+<nav>
+            <a class="left-button" href="/employeesAttendance/listAttendance">Employee Attendance Directory</a>
+
+            <a class="right-button" href="/logout" style="float: right;">Logout</a>
+</nav>
+<br><br>
+
+   <!--Employee Attendance Directory
+    <form sec:authorize="hasRole('MANAGER')" action="#" th:action="@{/employeesAttendance/listAttendance}"
+    method="GET">
+    <input type="submit" value="Go To Employee Attendance Directory" class="btn btn-outline-primary mt-2" />
+    </form>
+
+    // Logout Button 
+    <form action="#" th:action="@{/logout}"
+    method="POST">
+
+    <input type="submit" value="Logout" class="btn btn-outline-primary mt-2" />
+
+    </form>-->
+
+
+<!-- display user name and role(s) -->
+<div class="container">
+    <p>
+        User: <span sec:authentication="principal.username"></span>
+        <br><br>
+        Role(s): <span sec:authentication="principal.authorities"></span>
+    </p>
+</div>
+<br>
+
+
+<!-- Camera and image section with verification details -->
+<div class="row outer-box">
+
+    <div class="col-lg-5 first-col" style="height:450px">
+        <center>
+            <div id="container" style="width: 280px; height:350px; overflow: hidden;margin:12px;">
+                <video autoplay="true" id="video" style="height:100%">
+                </video>
+            </div>
+            <button onclick="capture()" class="btn btn-primary">Capture</button>
+            <br>
+        </center>
+        <br>
+    </div>
+
+    <div class="col-lg-7" style="height:450px;">
+        <div class="flex-container" style="border:1px solid black;">
+            <canvas id="canvas" style="overflow:auto" width="250" height="250"></canvas>
+         <div id="verify">
+            <i id="icon1" class="bi bi-file-check-fill"></i>
+            <i id="icon2" class="bi bi-file-x-fill"></i>
+            </div>
+
+        </div>
+
+        <div id="print-div">
+        <p> Details of person in image: </p>
+        <p id="printresult"></p>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<div id="box-2">
+    <button type="button" class="btn btn-success">Check In</button>
+    <button type="button" class="btn btn-primary">Check Out</button>
+</div>
+<br>
+
+<script>
+
+    var video = document.querySelector("#video");
+     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+              video.srcObject = stream;
+
+              video.play();
+            })
+
+     }
+     var resultb64="";
+     function capture() {
+        var canvas = document.getElementById('canvas');
+        var video = document.getElementById('video');
+        canvas.width = 250;
+        canvas.height = 250;
+        canvas.getContext('2d').drawImage(video, 0, 0, 250,250);
+        resultb64=canvas.toDataURL();
+        // document.getElementById("printresult").innerHTML = canvas.toDataURL();
+        str1=resultb64.split(',')[1];
+        console.log(str1);
+        //document.getElementById("printresult").innerHTML = str1;
+
+        const url = 'http://192.168.5.26:3000/detect_final2';
+    const data1 = {   "name":"None",
+        "department":"IT",
+        "time":"",
+        "image": str1
+    };
+
+$.ajax({
+    url: url,
+    type: 'POST',
+    data: JSON.stringify(data1),
+    contentType: 'application/json',
+    success: function(data) {
+        console.log('Success:', data);
+        if(data.status=="success")
+        {
+        document.getElementById("verify").innerHTML=`<i id="icon1" class="bi bi-file-check-fill"></i>`;
+        $("#printresult").html(`<b style="font-size:15px;">Person is verified!</b><br> Name :`+data.name+`<br>ID :`+data.id+`<br>Status :`+data.status);
+        }
+        if(data.status=="failed"){
+        document.getElementById("verify").innerHTML=`<i id="icon2" class="bi bi-file-x-fill"></i>`
+            $("#printresult").html(`<b style="font-size:15px">Person is Not Verified!Please try again.</b><br>`+`Message :`+data.message);
+
+        }
+
+
+    },
+    error: function(error) {
+        console.error('Error:', error);
+    }
+});
+
+
+
+     }
+
+
+
+</script>
+
+</body>
+</html>
